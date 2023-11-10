@@ -1,0 +1,35 @@
+#+LATEX_CLASS_OPTIONS: [11pt]
+#+LATEX_HEADER: \usepackage{placeins}
+#+OPTIONS: H:4 toc:nil title:nil author:nil date:nil
+#+LATEX_HEADER: \input article_setup.tex
+#+LATEX_HEADER: \geometry{letterpaper,textwidth=6.4in,textheight=9in,includeheadfoot}
+
+#+BEGIN_EXPORT latex
+\author{\normalsize L. Larrabee Strow}
+\date{\normalsize \today}
+\title{\large\textbf{\textsf{README for Git Repo: fts-fp-fit}}}
+\maketitle
+#+END_EXPORT
+
+
+These codes show how to fit a CrIS instrument frequency offsets (in ppm) in order to generate a new, more accurate focal plane model.
+
+-  =test_fit.m= :: The overall test file that calls the other Mfiles in this directory for a full simulation.
+
+- =fit_ppm.m= :: Driver file for the non-linear fit to the focal plane ppm offsets
+- =get_fp.m= ::  Returns the focal plane model for the "named" focal plane.  This should be the focal plane used to generate the ppm offsets that are being fit here.
+- =fp_fit.m= :: Returns the focal plane offsets for the current iteration of the focal plane, no radial term.
+- =fp_fit_withr2.m= :: Returns the focal plane offsets for the current iteration of the focal plane, including a radial adjustment.  /This is for diagnostic purposes only, use =fp_fit.m= to generate the offsets used in the ENGR PKT./
+- =fit_print.m= :: Print routine
+
+
+** Details
+
+- I believe the ppm numbers usedd in =test_fit.m= represent the last iteration for J1, but not positive.
+- Unfortunately, this software needs not only the base MATLAB, but also the Optimization Toolkit for the call to =lsqcurvefit=, which is the main non-linear optimization routine.
+  - The line bd = [1E6 1E6 1E6 1E6] just sets up bounds on the optimization.  These are set to be quite large since it really doesn't matter much, the optimized fit is always very close to the inputs, and convergence is easy.
+  - =options \= optimoptions('lsqcurvefit','Display','none');= sets up some options for =lslqcurvefit=.  The default search option is "trust-region-reflective".   I very much doubt it matters which algorithm you use.
+
+I will go over the codes line-by-line, but it is all rather simple.
+
+
